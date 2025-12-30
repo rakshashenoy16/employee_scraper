@@ -8,15 +8,13 @@ pip install -r requirements.txt
 ## Run
 python src/main.py
 
-✔ Very common for beginner PRs  
-✔ Teammates can review easily
 
----
 
-### ✅ Option 2: Add logging to code (Professional PR)
+
+# Option 2: Add logging to code (Professional PR)
 In `main.py` or `fetch_data.py`, add logging.
 
-**Example (main.py)**
+# Example (main.py)
 ```python
 import logging
 

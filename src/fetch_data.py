@@ -1,3 +1,4 @@
+# Handles all API communication for fetching employee data
 import requests
 import logging
 from time import sleep
@@ -7,8 +8,10 @@ URL = "https://api.slingacademy.com/v1/sample-data/files/employees.json"
 def fetch_employee_data(retries=3):
     for attempt in range(retries):
         try:
+             # Send GET request to fetch employee records
             response = requests.get(URL, timeout=10)
             if response.status_code == 200:
+            # Return employee list from the API response
                 return response.json()
             else:
                 logging.error(f"Failed with status code {response.status_code}")

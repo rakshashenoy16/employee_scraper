@@ -1,3 +1,4 @@
+# Unit tests for validating employee data scraper functionality
 import unittest
 from src.fetch_data import fetch_employee_data
 from src.transform_data import transform_data
@@ -7,6 +8,7 @@ class TestEmployeeScraper(unittest.TestCase):
 
     # Test Case 1: Verify JSON File Download
     def test_api_download(self):
+        # Verify API returns employee data successfully
         data = fetch_employee_data()
         self.assertIsNotNone(data)
         self.assertGreater(len(data), 0)
