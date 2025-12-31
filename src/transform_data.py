@@ -27,7 +27,18 @@ def transform_data(raw_data):
     # Phone validation
     def validate_phone(phone):
         phone_str = str(phone)
-        return phone_str if phone_str.isdigit() else "Invalid Number"
+        cleaned_phone = (
+            phone_str
+            .replace(".", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("+", "")
+            .replace(" ", "")
+        )
+        if cleaned_phone.isdigit():
+            return phone_str
+        return "Invalid Number"
 
     df["phone"] = df["phone"].apply(validate_phone)
 
