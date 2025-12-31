@@ -1,12 +1,15 @@
-# Contains all data cleaning and transformation logic
 import pandas as pd
 
+
 def transform_data(raw_data):
-    # Convert raw JSON data into a Pandas DataFrame
+    # Handles raw data
     df = pd.DataFrame(raw_data)
 
     # Create Full Name
     df["Full Name"] = df["first_name"] + " " + df["last_name"]
+
+    # Drop unused name columns
+    df.drop(columns=["first_name", "last_name"], inplace=True)
 
     # Designation logic
     def designation(exp):
@@ -14,40 +17,46 @@ def transform_data(raw_data):
             return "System Engineer"
         elif 3 <= exp <= 5:
             return "Data Engineer"
-        elif 6 <= exp <= 10:
+        elif 5 < exp <= 10:
             return "Senior Data Engineer"
         else:
             return "Lead"
 
     df["designation"] = df["years_of_experience"].apply(designation)
 
-    # Normalize phone numbers
-    df["phone"] = df["phone"].apply(
-        lambda x: x if str(x).isdigit() else "Invalid Number"
-    )
+    # Phone validation
+    def validate_phone(phone):
+        phone_str = str(phone)
+        return phone_str if phone_str.isdigit() else "Invalid Number"
 
-    # Format hired_date if present
-    if "hired_date" in df.columns:
-        df["hired_date"] = pd.to_datetime(df["hired_date"]).dt.strftime("%Y-%m-%d")
+    df["phone"] = df["phone"].apply(validate_phone)
 
-    #  DROP RAW NAME COLUMNS (THIS IS THE KEY FIX)
-    df.drop(columns=["first_name", "last_name"], inplace=True)
+    # Data type enforcement
+    df = df.astype({
+        "email": "string",
+        "gender": "string",
+        "age": "int",
+        "job_title": "string",
+        "years_of_experience": "int",
+        "salary": "int",
+        "department": "string"
+    })
 
-    # Select ONLY warehouse-ready columns
-    df = df[
-        [
-            "id",
-            "Full Name",
-            "email",
-            "phone",
-            "gender",
-            "age",
-            "job_title",
-            "years_of_experience",
-            "designation",
-            "salary",
-            "department"
-        ]
+    # Final column order
+    final_columns = [
+        "id",
+        "Full Name",
+        "email",
+        "phone",
+        "gender",
+        "age",
+        "job_title",
+        "years_of_experience",
+        "designation",
+        "salary",
+        "department"
     ]
+
+    df = df[final_columns]
 
     return df
