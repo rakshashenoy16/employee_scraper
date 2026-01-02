@@ -7,30 +7,31 @@ from src.transform_data import transform_data
 
 class TestEmployeeScraper(unittest.TestCase):
 
-
+ 
     # Test Case 1: Verify API Download
-  
+ 
     def test_api_download(self):
         data = fetch_employee_data()
         self.assertIsNotNone(data)
         self.assertGreater(len(data), 0)
 
-    
+
     # Test Case 2: Verify JSON Extraction
-  
+   
     def test_json_extraction(self):
         data = fetch_employee_data()
         self.assertIsInstance(data, list)
 
+
     # Test Case 3: Validate JSON Format
-    
+
     def test_json_format(self):
         data = fetch_employee_data()
         self.assertIsInstance(data[0], dict)
 
-    
+
     # Test Case 4: Validate Required Columns
-   
+
     def test_required_fields_exist(self):
         data = fetch_employee_data()
         df = transform_data(data)
@@ -51,9 +52,9 @@ class TestEmployeeScraper(unittest.TestCase):
         for column in required_columns:
             self.assertIn(column, df.columns)
 
-    
-    # Test Case 5: Invalid Phone Handling
-   
+
+    # Test Case 5: Invalid Phone Handling (Simple Invalid)
+
     def test_invalid_phone_handling(self):
         mock_data = [
             {
@@ -89,7 +90,6 @@ class TestEmployeeScraper(unittest.TestCase):
         self.assertEqual(df.loc[0, "phone"], "Invalid Number")
         self.assertEqual(df.loc[1, "phone"], "Invalid Number")
 
-
     # Test Case 6: Valid Phone Retained
 
     def test_valid_phone_retained(self):
@@ -112,6 +112,30 @@ class TestEmployeeScraper(unittest.TestCase):
         df = transform_data(mock_data)
 
         self.assertEqual(df.loc[0, "phone"], "9876543210")
+
+ 
+    # Test Case 7: Mixed Character Phone (Negative Scenario)
+
+    def test_mixed_character_phone_invalid(self):
+        mock_data = [
+            {
+                "id": 3,
+                "first_name": "Mixed",
+                "last_name": "Phone",
+                "email": "mixed@example.com",
+                "phone": "9@356!09-2",
+                "gender": "male",
+                "age": 32,
+                "job_title": "Tester",
+                "years_of_experience": 4,
+                "salary": 7000,
+                "department": "QA"
+            }
+        ]
+
+        df = transform_data(mock_data)
+
+        self.assertEqual(df.loc[0, "phone"], "Invalid Number")
 
 
 if __name__ == "__main__":
