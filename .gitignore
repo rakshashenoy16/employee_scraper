@@ -1,3 +1,5 @@
 __pycache__/
 *.csv
 logs/app.log
+.vSCode/
+.env
